@@ -1,0 +1,32 @@
+{
+    "sensorId": "sensor04",
+    "metadata": {
+        "title": "Escenario 4: Sensor Híbrido de Conducción Estructural",
+        "description": "Dispositivo integrado complejo (Multi-sensor) que recolecta de forma simultánea tres variables de telemetría física heterogéneas, monitorizando la temperatura interna de la celda y sus vibraciones mecánicas.",
+        "version": "1.0"
+    },
+    "inputs": {
+        "alert": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 50, "default": 35, "currentValue": 35, "description": "Umbral térmico crítico para el canal 1. Superarlo disparará alarmas visuales inmediatas y trazas WARNING en los logs." },
+        "min_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 49, "default": 0, "currentValue": 0, "description": "Rango mínimo operativo." },
+        "max_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -9, "maximum": 50, "default": 45, "currentValue": 45, "description": "Rango máximo operativo." }
+    },
+    "outputs": {
+        "time_vector": { "type": "UINT32", "unit": "ms", "description": "Base de tiempo unificada para el empaquetado masivo." },
+        "output_01": { "type": "FLOAT32", "unit": "celsius", "dimensions": 1, "resolution": 0.01, "resolution_bits": 12, "description": "Canal 1: Temperatura interna de operación." },
+        "output_02": { "type": "FLOAT32", "unit": "m/s2", "dimensions": 1, "resolution": 0.01, "resolution_bits": 14, "description": "Canal 2: Vibración/Aceleración en el eje X." },
+        "output_03": { "type": "FLOAT32", "unit": "m/s2", "dimensions": 1, "resolution": 0.01, "resolution_bits": 14, "description": "Canal 3: Vibración/Aceleración en el eje Y." }
+    },
+    "actions": {
+        "init": { "description": "Inicialización del firmware del array de sensores híbridos.", "arguments": {} },
+        "capture_single": { "description": "No aplica para modo combinado.", "arguments": {} },
+        "capture_doble": { "description": "No aplica para modo combinado.", "arguments": {} },
+        "capture_triple": { "description": "Captura continua y empaquetado síncrono del bloque de tres canales activos.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100, 400, 800, 1000], "default": 100 } } },
+        "stop": { "description": "Cese inmediato de la adquisición de datos.", "arguments": {} },
+        "status": { "description": "Estado del sensor.", "arguments": {} }
+    },
+    "events": {
+        "hardware_fault": { "description": "Fallo crítico de lectura de datos."},
+        "value_alarm": { "description": "Alerta Térmica: El Canal 1 ha superado el límite seguro de temperatura." }
+    },
+    "telemetry": { "topic": "sensores/data", "format": "json" }
+}

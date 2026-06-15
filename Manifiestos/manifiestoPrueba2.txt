@@ -1,0 +1,32 @@
+{
+    "sensorId": "sensor02",
+    "metadata": {
+        "title": "Escenario 2: Termómetro Avanzado con Umbral de Alerta",
+        "description": "Sensor de temperatura de un solo canal diseñado para evaluar la capacidad de respuesta del sistema ante desbordaminetos críticos y gestión de alarmas reactivas.",
+        "version": "1.0"
+    },
+    "inputs": {
+        "alert": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 50, "default": 35, "currentValue": 35, "description": "Umbral térmico crítico. Superarlo disparará notificaciones visuales inmediatas y trazas WARNING en los logs." },
+        "min_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 49, "default": 0, "currentValue": 0, "description": "Rango mínimo operativo." },
+        "max_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -9, "maximum": 50, "default": 45, "currentValue": 45, "description": "Rango máximo operativo." }
+    },
+    "outputs": {
+        "time_vector": { "type": "UINT32", "unit": "ms", "description": "Base temporal de adquisición." },
+        "output_01": { "type": "FLOAT32", "unit": "celsius", "dimensions": 1, "resolution": 0.01, "resolution_bits": 12, "description": "Lectura directa del canal térmico." },
+        "output_02": { "type": "FLOAT32", "unit": "N/A", "dimensions": 0, "resolution": 0, "resolution_bits": 0, "description": "Canal secundario inactivo en esta prueba." },
+        "output_03": { "type": "FLOAT32", "unit": "N/A", "dimensions": 0, "resolution": 0, "resolution_bits": 0, "description": "Canal terciario inactivo en esta prueba." }
+    },
+    "actions": {
+        "init": { "description": "Inicializa el hardware térmico.", "arguments": {} },
+        "capture_single": { "description": "Captura continua y monitorización de umbrales a frecuencias variables.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100, 400, 800, 1000], "default": 400 } } },
+        "capture_doble": { "description": "No aplica para este escenario.", "arguments": {} },
+        "capture_triple": { "description": "No aplica para este escenario.", "arguments": {} },
+        "stop": { "description": "Detiene el pipeline de captura y desactiva el hilo de adquisición.", "arguments": {} },
+        "status": { "description": "Estado del hardware.", "arguments": {} }
+    },
+    "events": {
+        "hardware_fault": { "description": "Fallo crítico de lectura de datos." },
+        "value_alarm": { "description": "Alerta por exceso de temperatura crítica superada." }
+    },
+    "telemetry": { "topic": "sensores/data", "format": "json" }
+}

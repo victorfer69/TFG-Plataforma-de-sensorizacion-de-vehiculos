@@ -1,0 +1,32 @@
+{
+    "sensorId": "sensor01",
+    "metadata": {
+        "title": "Escenario 1: Termómetro de Medida Simple",
+        "description": "Este sensor simula un termómetro analógico encargado de validar la infraestructura base del sistema, inyectando un único canal activo a frecuencias estándar.",
+        "version": "1.0"
+    },
+    "inputs": {
+        "alert": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 50, "default": 30, "currentValue": 30, "description": "Alerta desactivada para test elemental." },
+        "min_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 49, "default": 0, "currentValue": 0, "description": "Rango mínimo de operación térmica." },
+        "max_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -9, "maximum": 50, "default": 40, "currentValue": 40, "description": "Rango máximo de operación térmica." }
+    },
+    "outputs": {
+        "time_vector": { "type": "UINT32", "unit": "ms", "description": "Base temporal de adquisición." },
+        "output_01": { "type": "FLOAT32", "unit": "celsius", "dimensions": 1, "resolution": 0.01, "resolution_bits": 12, "description": "Lectura directa del canal de temperatura (Eje Único)." },
+        "output_02": { "type": "FLOAT32", "unit": "N/A", "dimensions": 0, "resolution": 0, "resolution_bits": 0, "description": "Canal secundario inactivo en esta prueba." },
+        "output_03": { "type": "FLOAT32", "unit": "N/A", "dimensions": 0, "resolution": 0, "resolution_bits": 0, "description": "Canal terciario inactivo en esta prueba." }
+    },
+    "actions": {
+        "init": { "description": "Inicializa el termómetro.", "arguments": {} },
+        "capture_single": { "description": "Captura continua de temperatura en un único canal.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100,400,800,1000], "default": 100 } } },
+        "capture_doble": { "description": "No aplica para este escenario.", "arguments": {} },
+        "capture_triple": { "description": "No aplica para este escenario.", "arguments": {} },
+        "stop": { "description": "Detiene el hilo de ejecución de captura del hardware.", "arguments": {} },
+        "status": { "description": "Estado del hardware.", "arguments": {} }
+    },
+    "events": {
+        "hardware_fault": { "description": "Fallo crítico en la lectura de los datos." },
+        "value_alarm": { "description": "Alerta por exceso de temperatura crítica superada." }
+    },
+    "telemetry": { "topic": "sensores/data", "format": "json" }
+}

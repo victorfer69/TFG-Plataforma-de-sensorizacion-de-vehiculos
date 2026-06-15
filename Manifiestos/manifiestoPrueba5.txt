@@ -1,0 +1,32 @@
+{
+    "sensorId": "sensor05",
+    "metadata": {
+        "title": "Escenario 5: Sensor Térmico Multicaptura Adaptativo",
+        "description": "Sensor avanzado avanzado reconfigurable por software que altera su salida para transmitir 1, 2 o 3 canales térmicos en función del modo de captura elegido por el usuario.",
+        "version": "1.0"
+    },
+    "inputs": {
+        "alert": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 50, "default": 35, "currentValue": 35, "description": "Umbral de alerta crítico. Superarlo por cualquier salida disparará la alerta visual y trazas WARNING en los logs." },
+        "min_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -10, "maximum": 49, "default": 0, "currentValue": 0, "description": "Rango mínimo operativo." },
+        "max_range": { "type": "FLOAT32", "unit": "celsius", "minimum": -9, "maximum": 50, "default": 45, "currentValue": 45, "description": "Rango máximo operativo." }
+    },
+    "outputs": {
+        "time_vector": { "type": "UINT32", "unit": "ms", "description": "Base temporal de adquisición." },
+        "output_01": { "type": "FLOAT32", "unit": "celsius", "dimensions": 1, "resolution": 0.01, "resolution_bits": 12, "description": "Lectura directa del canal térmico 1. (Habilitado en capture_single, capture_doble, capture_triple)" },
+        "output_02": { "type": "FLOAT32", "unit": "celsius", "dimensions": 1, "resolution": 0.01, "resolution_bits": 12, "description": "Lectura directa del canal térmico 2. (Habilitado en capture_doble, capture_triple)" },
+        "output_03": { "type": "FLOAT32", "unit": "celsius", "dimensions": 1, "resolution": 0.01, "resolution_bits": 12, "description": "Lectura directa del canal térmico 3. (Habilitado en capture_triple)" }
+    },
+    "actions": {
+        "init": { "description": "Inicializa el hardware térmico.", "arguments": {} },
+        "capture_single": { "description": "Captura continua a alta frecuencia para una única salida.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100, 400, 800, 1000], "default": 400 } } },
+        "capture_doble": { "description": "Captura continua a alta frecuencia para salida doble de datos.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100, 400, 800, 1000], "default": 400 } } },
+        "capture_triple": { "description": "Captura continua a alta frecuencia para salida triple de datos.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100, 400, 800, 1000], "default": 400 } } },
+        "stop": { "description": "Detiene el pipeline de captura.", "arguments": {} },
+        "status": { "description": "Estado del hardware.", "arguments": {} }
+    },
+    "events": {
+        "hardware_fault": { "description": "Fallo crítico de lectura física." },
+        "value_alarm": { "description": "Alerta por exceso de temperatura crítica superada." }
+    },
+    "telemetry": { "topic": "sensores/data", "format": "json" }
+}

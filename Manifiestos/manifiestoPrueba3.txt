@@ -1,0 +1,32 @@
+{
+    "sensorId": "sensor03",
+    "metadata": {
+        "title": "Escenario 3: Acelerómetro Bi-Axial (Ejes X-Y)",
+        "description": "Sensor inercial vectorial que inyecta telemetría simultánea de dos componentes espacialespara monitorización de movimiento continuo sin filtrado de alarmas.",
+        "version": "1.0"
+    },
+    "inputs": {
+        "alert": { "type": "FLOAT32", "unit": "m/s2", "minimum": 0, "maximum": 70, "default": 50, "currentValue": 50, "description": "Umbral de aceleración neta (Magnitud del Vector). Desactivado para este caso, dispara alarma si sqrt(X²+Y²) > Z." },
+        "min_range": { "type": "FLOAT32", "unit": "m/s2", "minimum": 0, "maximum": 49, "default": 0, "currentValue": 0, "description": "Límite operativo inferior para el escalado de aceleración.." },
+        "max_range": { "type": "FLOAT32", "unit": "m/s2", "minimum": 1, "maximum": 50, "default": 50, "currentValue": 50, "description": "Límite operativo superior para el escalado de aceleración." }
+    },
+    "outputs": {
+        "time_vector": { "type": "UINT32", "unit": "ms", "description": "Base temporal de adquisición síncrona." },
+        "output_01": { "type": "FLOAT32", "unit": "m/s2", "dimensions": 1, "resolution": 0.01, "resolution_bits": 16, "description": "Aceleración transitoria en el Eje Lateral (X)." },
+        "output_02": { "type": "FLOAT32", "unit": "m/s2", "dimensions": 1, "resolution": 0.01, "resolution_bits": 16, "description": "Aceleración transitoria en el Eje Longitudinal (Y)." },
+        "output_03": { "type": "FLOAT32", "unit": "N/A", "dimensions": 0, "resolution": 0, "resolution_bits": 0, "description": "Canal terciario inactivo en esta prueba." }
+    },
+    "actions": {
+        "init": { "description": "Calibra e inicializa el acelerómetro.", "arguments": {} },
+        "capture_single": { "description": "No aplica para adquisición vectorial.", "arguments": {} },
+        "capture_doble": { "description": "Captura síncrona acoplada de ambos ejes a alta velocidad.", "arguments": { "frequency": { "type": "UINT16", "unit": "Hz", "type_control": "select", "options": [100, 400, 800, 1000], "default": 400 } } },
+        "capture_triple": { "description": "No aplica para este escenario.", "arguments": {} },
+        "stop": { "description": "Detiene la captura de datos.", "arguments": {} },
+        "status": { "description": "Verifica comunicación con el registro del chip.", "arguments": {} }
+    },
+    "events": {
+        "hardware_fault": { "description": "Fallo crítico por pérdida de comunicación en el bus I2C/SPI con el chip." },
+        "value_alarm": { "description": "Alerta por exceso de longitud del vector crítica superada." }
+    },
+    "telemetry": { "topic": "sensores/data", "format": "json" }
+}
